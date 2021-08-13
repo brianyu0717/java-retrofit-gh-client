@@ -1,10 +1,6 @@
 # retrofit library example
 
-Using the Retrofit library to call the Cat facts API
+Using the Retrofit library to call the [random user](https://randomuser.me/) 
+api [synchronously](https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html#execute--) 
+and [asynchronously](https://square.github.io/retrofit/2.x/retrofit/retrofit2/Call.html#enqueue-retrofit2.Callback-).
 
-## Notes
-
-* ```CatFactsService``` uses the  retrofit interface ```CatFactsRetrofit``` to make the HTTP calls.
-* ```RetrofitFactory``` builds a ```Retrofit``` with the baseUrl and Jackson
-* ```Main``` uses the ```RetrofitFactory``` to build a ```CatFactsService```
-* The data model is segregated between the internal use (Fact) and Retrofit use (FactDTO)

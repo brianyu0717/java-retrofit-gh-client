@@ -1,20 +1,39 @@
-import model.Fact;
-import retrofit.CatFactsRetrofit;
+import model.ResultDTO;
+import retrofit.RandomUserRetrofit;
 import retrofit.RetrofitFactory;
 import retrofit2.Retrofit;
-import service.CatFactsService;
+import service.RandomUserService;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static service.ResultsHandler.printResult;
 
 public class Main {
-    public static void main(String[] args) {
+    private static void synchronousExample() {
         Retrofit retrofit = RetrofitFactory.getRetrofit();
 
-        CatFactsRetrofit catFactsRetrofit = retrofit.create(CatFactsRetrofit.class);
-        CatFactsService catFactsService = new CatFactsService(catFactsRetrofit);
+        RandomUserRetrofit randomUserRetrofit = retrofit.create(RandomUserRetrofit.class);
+        RandomUserService randomUserService = new RandomUserService(randomUserRetrofit);
 
-        System.out.println("Num of facts: " + catFactsService.countFacts());
-        System.out.println();
-        catFactsService.listFacts().stream()
-                .map(Fact::getFact)
-                .forEach(System.out::println);
+        ResultDTO result = randomUserService.getResult();
+        printResult(result);
     }
+
+    private static void asyncExample() {
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        Retrofit retrofit = RetrofitFactory.getRetrofit(executorService);
+        RandomUserRetrofit randomUserRetrofit = retrofit.create(RandomUserRetrofit.class);
+        RandomUserService randomUserService = new RandomUserService(randomUserRetrofit);
+        randomUserService.getUserAsync();
+    }
+
+    public static void main(String[] args) {
+        asyncExample();
+//        synchronousExample();
+        System.out.println(Thread.currentThread().getName());
+        System.out.println("here");
+    }
+
+
 }

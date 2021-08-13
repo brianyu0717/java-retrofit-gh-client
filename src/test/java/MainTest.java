@@ -1,7 +1,9 @@
-import model.FactDTO;
+import model.NameDTO;
+import model.ResultDTO;
+import model.UserDTO;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import retrofit.CatFactsRetrofit;
+import retrofit.RandomUserRetrofit;
 import retrofit2.Call;
 import retrofit2.mock.Calls;
 
@@ -14,17 +16,18 @@ import static org.mockito.Mockito.when;
 
 class MainTest {
 
-    private final List<FactDTO> factDTOS = List.of(
-            new FactDTO("happy", "cat"),
-            new FactDTO("liquid", "cat"));
+    private ResultDTO resultDTO = new ResultDTO(List.of(new UserDTO(new NameDTO("Brian", "Grumpy"))));
 
     @Test
     void testService() throws IOException {
-        CatFactsRetrofit catFactsRetrofit = Mockito.mock(CatFactsRetrofit.class);
-        when(catFactsRetrofit.listFacts()).thenReturn(Calls.response(factDTOS));
+        RandomUserRetrofit randomUserRetrofit = Mockito.mock(RandomUserRetrofit.class);
+        when(randomUserRetrofit.getUser()).thenReturn(Calls.response(resultDTO));
 
-        Call<List<FactDTO>> facts = catFactsRetrofit.listFacts();
-        List<FactDTO> body = facts.execute().body();
-        assertEquals(2, body.size());
+        Call<ResultDTO> call = randomUserRetrofit.getUser();
+        ResultDTO body = call.execute().body();
+        assertNotNull(body.getResults());
+        assertEquals(1, body.getResults().size());
+        assertEquals("Brian", body.getResults().get(0).getName().getFirst());
+        assertEquals("Grumpy", body.getResults().get(0).getName().getLast());
     }
 }
